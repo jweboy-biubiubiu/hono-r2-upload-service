@@ -1,3 +1,4 @@
+import { R2ListOptions } from "@cloudflare/workers-types";
 import { Hono } from "hono";
 import { env } from "hono/adapter";
 import { bodyLimit } from "hono/body-limit";
@@ -14,6 +15,18 @@ app.use("/*", cors());
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");
+});
+
+app.get("/list", async (c) => {
+  const query = c.req.query();
+  const { MY_BUCKET } = env<{ MY_BUCKET: R2Bucket }>(c);
+  const options: R2ListOptions = {
+    limit: 1000,
+    delimiter: "/",
+    prefix: query.catalog,
+  };
+  const listing = await MY_BUCKET.list(options);
+  return c.json({ data: listing, code: 0 });
 });
 
 app.post(
@@ -47,7 +60,6 @@ app.post(
     },
   }),
   async (c) => {
-    // const body = await c.req.parseBody();
     const body = c.req.valid("form");
     const file = body.file as File;
     const catalog = body.catalog as string;
