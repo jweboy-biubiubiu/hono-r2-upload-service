@@ -6,7 +6,7 @@ import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { validator } from "hono/validator";
 
-const BASE_URL = "https://resource.jweboy.asia";
+const BASE_URL = "https://assets.jweboy.asia";
 
 const app = new Hono();
 
